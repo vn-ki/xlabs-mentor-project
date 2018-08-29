@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="columns">
+  <div class="column">
+    <div class="info">
+      <h1 class="is-size-1">Plotter</h1>
+      <h2 class="help">such a funny name</h2>
+      <p class="is-size-5">Uses matplotlib to plot.</p>
+    </div>
+  </div>
+  <div class="column">
+    <div class="field is-grouped">
+      <div class="control">
+        <label class="label">Columns</label>
+        <input class="input" type="text" id="no-col">
+        <p class="help">No. of Coloums</p>
+      </div>
+      <div class="control">
+        <label class="label">Rows</label>
+        <input class="input" type="text" id="no-row">
+        <p class="help">No. of rows</p>
+      </div>
+    </div>
+    <div class="field">
+      <label class="label">Table type</label>
+      <div class="control">
+        <div class="select">
+          <select>
+            <option>Select dropdown</option>
+            <option>With options</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="field is-grouped">
+      <div class="control buttons">
+        <button class="button is-link" onclick="create_table(document.getElementById('no-row').value, document.getElementById('no-col').value)">Create table</button>
+      </div>
+    </div>
+    <form action="{{ url_for('plot') }}" method="post">
+      <table class="table">
+        <thead></thead>
+        <tbody></tbody>
+      </table>
+      <div id="table-btn"></div>
+    </form>
+  </div>
+</div>
+<script type="text/javascript">
+  function add_plot_btn() {
+    var cont = document.getElementById('table-btn');
+    if (cont.children.length>0) {
+      return;
+    }
+    var btn = document.createElement('button');
+    btn.innerText = 'Plot';
+    btn.classList.add('button', 'is-success');
+    btn.type = 'submit';
+    cont.appendChild(btn);
+  }
+
+  function create_table(rows, coloumns) {
+    add_plot_btn();
+
+    var thead = document.getElementsByTagName('thead')[0];
+    var trh = document.createElement('tr');
+    for (var i=0; i<coloumns; i++) {
+      var td = document.createElement('th');
+      var inp = document.createElement('input');
+      inp.classList.add("input", "is-small");
+      inp.name = 'col-'+i;
+      td.appendChild(inp);
+      trh.appendChild(td);
+    }
+    thead.appendChild(trh);
+
+    var tbody = document.getElementsByTagName('tbody')[0];
+    for (var i=0; i<rows; i++) {
+      var tr = document.createElement('tr');
+      for (var j=0; j<coloumns; j++) {
+        var td = document.createElement('td');
+        var inp = document.createElement('input');
+        inp.classList.add("input", "is-small");
+        inp.name = ''+i+j;
+        td.appendChild(inp);
+        tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
+    }
+  }
+</script>
+{% endblock %}
