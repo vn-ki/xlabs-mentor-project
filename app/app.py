@@ -12,21 +12,24 @@ def home():
 
 @app.route('/plot', methods=['POST'])
 def plot():
-    print(request.form)
     labels = [k for k in request.form.keys() if k.startswith('col-')]
     data = dict(request.form)
-    x = [int(v[0]) for k, v in data.items() if k.endswith('0') and not k.startswith('col')]
-    y = [int(v[0]) for k, v in data.items() if k.endswith('1') and not k.startswith('col')]
-    print(labels, x, y)
+    print(data)
+
+    try:
+        x = [int(v[0]) for k, v in data.items() if k.endswith('0') and not k.startswith('col')]
+        y = [int(v[0]) for k, v in data.items() if k.endswith('1') and not k.startswith('col')]
+        plot_type = data['plot-type'][0]
+    except Exception:
+        return render_template('error.html')
+
     fig, ax = plt.subplots()
-    ax.plot(x, y)
+    getattr(ax, plot_type)(x, y)
     ax.set(xlabel=labels[0], ylabel=labels[1])
     img = BytesIO()
     plt.savefig(img)
     img.seek(0)
     return send_file(img, mimetype='image/png')
-
-
 
 
 if __name__ == "__main__":

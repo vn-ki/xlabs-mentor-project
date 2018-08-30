@@ -9,32 +9,23 @@
     </div>
   </div>
   <div class="column">
-    <div class="field is-grouped">
-      <div class="control">
-        <label class="label">Columns</label>
-        <input class="input" type="text" id="no-col">
-        <p class="help">No. of Coloums</p>
-      </div>
-      <div class="control">
-        <label class="label">Rows</label>
-        <input class="input" type="text" id="no-row">
-        <p class="help">No. of rows</p>
-      </div>
-    </div>
-    <div class="field">
-      <label class="label">Table type</label>
-      <div class="control">
-        <div class="select">
-          <select>
-            <option>Select dropdown</option>
-            <option>With options</option>
-          </select>
+    <div id="create-table">
+      <div class="field is-grouped">
+        <div class="control">
+          <label class="label">Columns</label>
+          <input class="input" type="text" id="no-col" value="2" disabled>
+          <p class="help">No. of Coloums</p>
+        </div>
+        <div class="control">
+          <label class="label">Rows</label>
+          <input class="input" type="text" id="no-row">
+          <p class="help">No. of rows</p>
         </div>
       </div>
-    </div>
-    <div class="field is-grouped">
-      <div class="control buttons">
-        <button class="button is-link" onclick="create_table(document.getElementById('no-row').value, document.getElementById('no-col').value)">Create table</button>
+      <div class="field is-grouped">
+        <div class="control buttons">
+          <button class="button is-link" onclick="create_table(document.getElementById('no-row').value, document.getElementById('no-col').value)">Create table</button>
+        </div>
       </div>
     </div>
     <form action="{{ url_for('plot') }}" method="post">
@@ -42,16 +33,32 @@
         <thead></thead>
         <tbody></tbody>
       </table>
+      <div class="field" style="display: none" id="table-dropdown">
+        <label class="label">Plot type</label>
+        <div class="control">
+          <div class="select">
+            <select name="plot-type">
+              <option value="plot">Plot</option>
+              <option value="scatter">Scatter</option>
+            </select>
+          </div>
+        </div>
+      </div>
       <div id="table-btn"></div>
     </form>
   </div>
 </div>
 <script type="text/javascript">
+  function clear_controls() {
+    document.getElementById('create-table').innerText = '';
+  }
+
+  function show_dropdown() {
+    document.getElementById('table-dropdown').style = '';
+  }
+
   function add_plot_btn() {
     var cont = document.getElementById('table-btn');
-    if (cont.children.length>0) {
-      return;
-    }
     var btn = document.createElement('button');
     btn.innerText = 'Plot';
     btn.classList.add('button', 'is-success');
@@ -60,15 +67,22 @@
   }
 
   function create_table(rows, coloumns) {
+    // Clear controls for creating table
+    clear_controls();
+    // Add a green plot button
     add_plot_btn();
+    // show dropdown containg plot types
+    show_dropdown();
 
+    // Add table input headers
     var thead = document.getElementsByTagName('thead')[0];
     var trh = document.createElement('tr');
     for (var i=0; i<coloumns; i++) {
       var td = document.createElement('th');
       var inp = document.createElement('input');
-      inp.classList.add("input", "is-small");
+      inp.classList.add("input");
       inp.name = 'col-'+i;
+      inp.placeholder = "Col Title";
       td.appendChild(inp);
       trh.appendChild(td);
     }
@@ -82,6 +96,7 @@
         var inp = document.createElement('input');
         inp.classList.add("input", "is-small");
         inp.name = ''+i+j;
+        inp.placeholder = "data";
         td.appendChild(inp);
         tr.appendChild(td);
       }
