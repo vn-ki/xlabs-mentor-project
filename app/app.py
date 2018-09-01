@@ -19,7 +19,7 @@ def home():
 def plot():
     data = dict(request.form)
 
-    labels = [k for k in data.keys() if k.startswith('col-')]
+    labels = [v[0] for k, v in data.items() if k.startswith('col-')]
 
     try:
         x = [int(v[0]) for k, v in data.items()
